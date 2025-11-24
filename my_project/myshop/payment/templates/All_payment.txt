@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+    <h1>Payment</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div> 
+        {% endif %}
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Price at Sale</th>
+                    <th>Description</th>
+                    <th>จำนวนทั้งหมด</th>
+                    <th>จำนวนที่ต้องการซื้อ</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {% for product in products %}
+                <tr> 
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price_at_sale}}</td>
+                    <td>{{ product.description }}</td>
+                    <td>
+                        {% for lot in product.lot_set.all %} {# ใช้ product.lot_set.all แทน product_lots #}
+                            {{ lot.quantity }} {{ product.unit }}
+                        {% empty %}
+                            ไม่มีสินค้าในคลัง
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <input type="number" name="quantity_{{ product.id }}" min="0" 
+                               max="{% for lot in product.lot_set.all %}{% if forloop.first %}{{ lot.quantity }}{% endif %}{% endfor %}" value="0"> {# ใช้ product.lot_set.all #}
+                    </td>
+                    <td>
+                        <span id="total_{{ product.id }}">0.00</span> บาท
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">ยืนยันการชำระเงิน</button> 
+    </form>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        {% for product in products %}
+        const quantityInput_{{ product.id }} = document.querySelector('input[name="quantity_{{ product.id }}"]');
+        const totalSpan_{{ product.id }} = document.getElementById('total_{{ product.id }}');
+
+        quantityInput_{{ product.id }}.addEventListener('change', () => {
+            const quantity = parseInt(quantityInput_{{ product.id }}.value);
+            const price = parseFloat({{ product.price_at_sale }});
+            const total = quantity * price;
+            totalSpan_{{ product.id }}.textContent = total.toFixed(2);
+        });
+        {% endfor %}
+    </script>
+{% endblock %}
+
+
+
+
+{% extends 'layout.html' %}
+
+{% block title %}Sale Detail{% endblock %}
+
+{% block content %}
+
+    <h1>Sale {{ sale.id }} - {{ sale.date }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price at Sale</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale_items %}
+                {% for product in item.products.all %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ item.quantity }}</td>  
+                        <td>{{ product.price_at_sale }}</td>  {# ใช้ product.price_at_sale #}
+                        <td>{% widthratio item.quantity 1 product.price_at_sale %}</td>  {# คำนวณ total price ของ product #}
+                    </tr>
+                {% endfor %} 
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Total Price: {{ sale.total_price }}</h2>
+
+{% endblock %}
+
+
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Cart</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.price }}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>Total Price: {{ total_price }}</strong></p>
+
+    <form method="post" action="{% url 'confirm_order' %}"> 
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Confirm Order</button>
+    </form>
+
+    <a href="{% url 'payment' %}" class="btn btn-secondary">Back to Payment</a> 
+
+{% endblock %}

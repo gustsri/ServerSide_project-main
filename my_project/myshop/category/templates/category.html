@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block title %}Category List{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col">
+            <h1>Category List</h1>
+        </div>
+        {% if perms.category.add_category  %}
+        <div class="col text-end">  <!--  จัดปุ่ม New category ให้ชิดขวา -->
+            <a href="{% url 'create_category' %}" class="btn btn-primary">New Category</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <table class="table table-hover mt-3">  <!--  เพิ่มระยะห่างด้านบนและ  table-hover -->
+        <thead class="table-light"> 
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Action</th>  <!--  รวมคอลัมน์ Action -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categorys %}
+                <tr>
+                    <td>{{ category.category_id }}</td>
+                    <td>{{ category.category_name }}</td>
+                    <td>
+                        <a href="{% url 'delete_category' category.category_id %}" class="btn btn-danger btn-sm">Delete</a>  <!--  ใช้ปุ่มขนาดเล็ก  btn-sm -->
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <!-- หากต้องการเพิ่ม JavaScript -->
+{% endblock %}

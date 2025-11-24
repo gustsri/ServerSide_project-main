@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h3 class="mt-4">Update Profile</h3>
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          {{ user_form.username.label_tag }}
+          {{ user_form.username }}
+        </div>
+        
+        <div class="mb-3">
+          {{ user_form.first_name.label_tag }}
+          {{ user_form.first_name }}
+        </div>
+
+        <div class="mb-3">
+          {{ user_form.last_name.label_tag }}
+          {{ user_form.last_name }}
+        </div>
+
+        <div class="mb-3">
+          {{ user_form.email.label_tag }}
+          {{ user_form.email }}
+        </div>
+          
+        <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
+      </form>
+      
+      
+        
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              
+      
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

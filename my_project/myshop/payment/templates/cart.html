@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Your Shopping Cart</h1>
+
+    {% if cart_items %}
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.price }} บาท</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="text-end">{{ item.total }} บาท</td>  <!-- แสดง item total -->
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td class="text-end"><strong>{{ total_price }} บาท</strong></td> 
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{% url 'payment' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </a>
+            </div>
+            <div class="col-md-6 text-end">
+                <form method="post" action="{% url 'confirm_order' %}" class="d-inline"> 
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">
+                        Proceed to Checkout <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Your cart is empty. <a href="{% url 'payment' %}" class="alert-link">Continue shopping</a>.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

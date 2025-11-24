@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}Add New Lots{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Add New Lot</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.product.as_hidden }}
+                <div class="mb-3">
+                    <label class="form-label">Product:</label> {{ product }}
+                </div>
+                <div class="mb-3">
+                    {{ form.import_date.label }}
+                    {{ form.import_date }}
+                </div>
+                <div class="mb-3">
+                    {{ form.expiry_date.label }}
+                    {{ form.expiry_date }}
+                </div>
+                <div class="mb-3">
+                    {{ form.quantity.label }}
+                    {{ form.quantity }}
+                </div>
+                <div class="mb-3">
+                    {{ form.purchase_price.label }}
+                    {{ form.purchase_price }}
+                </div>
+
+                {% if form.errors %}
+                    <ul class="errorlist">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                {% comment %} <a href="{% url 'lot_product' product_id %}" class="btn btn-secondary">Back</a> {% endcomment %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

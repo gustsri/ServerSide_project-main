@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+    <div class="head">
+        <h1>Product</h1>
+        <div class>
+            <h1>Total {{ totalproduct }} Item</h1> 
+        </div>
+        <a href="{% url 'productform' %}"><button class="btn btn-primary">New product</button></a>
+        <a href="{% url 'category' %}"><button class="btn btn-primary">View category</button></a>
+    </div>
+
+    <form method="get">
+        <div class="form-row">
+            <div class="col">
+                <label for="categories">Select Category:</label>
+                <select class="form-control" id="categories" name="categoryid">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{category.category_id}}">{{category.category_name}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">  
+                <button type="submit" class="btn btn-primary">Filter</button>  {# ย้าย button มาที่นี่ #}
+            </div>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price at Sale</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>จำนวนทั้งหมด</th>
+                <th></th> 
+                <th></th> 
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for product in products %}
+            
+            <tr> 
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price_at_sale }}</td>
+                <td> 
+                    {% for category in product.categories.all %} 
+                        
+                        {{ category.category_name }} 
+                    {% endfor %}
+                </td>
+                <td>{{ product.description }}</td>
+
+                
+                <td>
+                    
+                {% for lot in lot_list %}
+                    
+                            
+                        {% if product.id == lot.product_id %}
+                            {{ lot.total_quantity }} {{ lot.unit }} 
+                        {%endif%}
+                        
+                    
+                {% endfor %}
+                
+                    
+                    
+                
+                
+                </td>
+                
+                <td>
+                    
+                    {% for lot in lot_list %}
+                        {% if lot.total_quantity %}
+                            {{ lot.total_quantity }} 
+                        {% else %}
+                            ไม่มีสินค้าในคลัง
+                        {% endif %}
+                    {% endfor %}
+                    
+                    </td>
+                    
+
+
+                
+                <td><a href="{% url 'product_detail' product.id %}"><button type="button" class="btn btn-secondary">View Detail</button></a></td>
+                <td><a href="{% url 'lot_product' product.id %}"><button type="button" class="btn btn-info">View Lot Detail</button></a></td>
+                <td><a href="{% url 'Lotform' %}"><button class="btn btn-warning">New Lot</button></a></td>
+                <td><a href="{% url 'deleteproduct' product.id %}"><button class="btn btn-danger">delete Product</button></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
+
+
+

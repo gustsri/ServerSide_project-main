@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">เลือกสินค้า</h1>
+
+    <form method="post" action="{% url 'cart' %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ชื่อสินค้า</th>
+                        <th>ราคา</th>
+                        <th>จำนวนคงเหลือ</th>
+                        <th>จำนวน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <!-- เพิ่ม hidden input field สำหรับ product_id -->
+                            <!--  <QueryDict: {'csrfmiddlewaretoken': ['...'], 'product_id_5': ['5'], 'quantity_5': ['3']}>  -->
+                                
+                            <input type="hidden" name="product_id_{{ product.id }}" value="{{ product.id }}">
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.price_at_sale }}</td>
+                            <td>{{ product.total_quantity }}</td>
+                            <td>
+                                <input type="number" class="form-control" name="quantity_{{ product.id }}" 
+                                       value="{{ product.cart_quantity }}" 
+                                       min="0" max="{{ product.total_quantity }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    {% for product in products_expired_only %}
+                        <tr class="table-danger">  <!-- Highlight expired products with Bootstrap -->
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.price_at_sale }}</td>
+                            <td>หมดอายุแล้ว ({{ product.expired_quantity }})</td>
+                            <td>
+                                <input type="number" class="form-control" name="quantity_{{ product.id }}" 
+                                       value="0" min="0" max="0" disabled>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg mt-4">Add to Cart</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Add any additional scripts here if needed -->
+{% endblock %}

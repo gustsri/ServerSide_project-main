@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Add Role{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h3 class="mt-4">Add Role</h3>
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in userall %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>
+          <a href="{% url 'addrole' user.id %}" class="btn btn-primary btn-sm">Add Role</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

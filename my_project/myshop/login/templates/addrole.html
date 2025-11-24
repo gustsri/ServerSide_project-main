@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+  <h3 class="mt-4">Manage User Roles</h3>
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="userid" class="form-label">User:</label>
+      {{ useruse }} 
+    </div>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Group Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for group in groups %}
+        <tr>
+          <td>{{ group.name }}</td>
+          <td>
+            <a href="{% url 'Deletegroup' useruse.id group.id %}" class="btn btn-danger btn-sm">Delete Group</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="mb-3">
+      <label for="groupid" class="form-label">Add Group:</label>
+      <select class="form-select" id="groupid" name="groupid">
+        <option value="">Select a group</option> 
+        {% for groupname in allgroup %}
+        <option value="{{ groupname.id }}">{{ groupname.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Role</button>
+    <a href="{% url 'viewemp' %}" class="btn btn-secondary">Back</a> 
+  </form>
+  
+</div>
+{% endblock %}

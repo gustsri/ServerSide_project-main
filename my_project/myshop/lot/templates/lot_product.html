@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block title %}Lot Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Lot Details</h1>
+    
+    {% if perms.lot.add_lot %}
+    <div class="mb-3">
+        
+        {% if product_id %} 
+            <a href="{% url 'Lotform' product_id %}" class="btn btn-sm btn-warning">New Lot</a>
+        {% else %}
+            <p>No product found.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if lot_product %} 
+        <h4>There are {{ lot_product.count }} lots for this product.</h4>  
+        <table class="table table-hover">  
+            <thead class="table-light">  
+                <tr>
+                    <th>Product Name</th>  
+                    <th>Import Date</th>  
+                    <th>Expiry Date</th>  
+                    <th>Quantity</th>  
+                    <th>Purchase Price</th>  
+                    {% if perms.lot.add_lot %}
+                    <th>Action</th>  
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for lot in lot_product %}
+                <tr>
+                    <td>{{ lot.product.name }}</td>
+                    <td>{{ lot.import_date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if lot.expiry_date < today %}
+                            <span class="text-danger">{{ lot.expiry_date|date:"d/m/Y" }}</span> 
+                        {% else %}
+                            {{ lot.expiry_date|date:"d/m/Y" }}
+                        {% endif %}
+                    </td>
+                    <td>{{ lot.quantity }}</td>
+                    <td>{{ lot.purchase_price }}</td>
+                    {% if perms.lot.add_lot %}
+                    <td><a href="{% url 'deletelot' lot.id %}" class="btn btn-danger btn-sm">Delete</a></td>  
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+        
+    <a href="{% url 'product' %}" class="btn btn-primary">Back</a> 
+</div>
+{% endblock %}
+
+{% block script %}
+    <!-- หากต้องการเพิ่ม JavaScript -->
+{% endblock %}
