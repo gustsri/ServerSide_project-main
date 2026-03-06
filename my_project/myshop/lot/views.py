@@ -46,7 +46,7 @@ class View_Lotform(LoginRequiredMixin, PermissionRequiredMixin, views.View):
         if product_id:
             product = get_object_or_404(Product, pk=product_id)
             # กำหนดค่า field product ใน form มีค่าเริ่มต้นเป็น product ที่มาจาก product_id
-            form = Lotform()  
+            form = Lotform(initial={'product': product})  
       
         context = {
             'form': form,
@@ -60,7 +60,7 @@ class View_Lotform(LoginRequiredMixin, PermissionRequiredMixin, views.View):
         # print(product_id)
         if product_id:
             product = get_object_or_404(Product, pk=product_id)
-            form = Lotform(request.POST)
+            form = Lotform(request.POST, initial={'product': product})
             
         if form.is_valid():
             form.save()  
